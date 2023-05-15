@@ -2,9 +2,10 @@ import tkinter as tk
 import tkinter.messagebox
 import customtkinter as ct
 from PIL import Image    #Pillow
-from GUIStats import * 
+import subprocess as sub
 
-import GUIStats
+
+
 
 #System settings
 ct.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
@@ -12,10 +13,13 @@ ct.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "
 
 
 
+        
+        
+
+
 
 #Class for the app
 class Home(ct.CTk):
-    #Class building the actual window and functions for AutoHawk
     
     def __init__(self,count):
         super().__init__()
@@ -53,28 +57,28 @@ class Home(ct.CTk):
 
     #Building fucntions
     def build_text(self):
-        #Function that builds the main entry front page
-
+        #Main Entry front page
         self.textbox = ct.CTkTextbox(self, width=250)
         self.textbox.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
         #Input for Text box
-        intro = open("Intro.txt", 'r')
-        self.textbox.insert("0.0",intro.read())
+        intro = "test" #open("imgs\Intro.txt", 'r')
+        self.textbox.insert("0.0",intro)#.read())
         self.textbox.configure(state = tk.DISABLED)
 
     def build_games(self):
-        #Function that builds the games display with buttons
-
+        #Build the games display with buttons
+        size = 150
         self.game_frame =  ct.CTkFrame(self, width = 250, corner_radius=0)
         self.game_frame.grid(row = 0, column = 1, rowspan = 4, sticky = "nsew")
 
-        self.game_btn1 = self.button(GUIStats.excitebike)
+        img = ct.CTkImage(light_image = Image.open("excitebike.jfif"),size=(size,size))
+        self.game_btn1 = ct.CTkButton(master=self.game_frame, text = "", image=img,command = self.play)
         self.game_btn1.grid(row = 1, column = 1, padx = 20, pady = 10)
         
 
-
-        self.game_btn2 = self.button(GUIStats.metro)
+        img = ct.CTkImage(light_image = Image.open("mario.png"),size=(size,size))
+        self.game_btn2 = ct.CTkButton(master=self.game_frame, text = "", image=img,command = self.play)
         self.game_btn2.grid(row = 1, column = 2, padx = 20, pady = 10)
         
 
@@ -82,8 +86,6 @@ class Home(ct.CTk):
 
     #Button functions
     def sidebar_button_home(self):
-        #Function to build the side bar for each game
-
         if (self.count == 0):
             #Add a delete for the games here
             self.delete_games()
@@ -95,8 +97,6 @@ class Home(ct.CTk):
             
 
     def sidebar_button_game(self):
-        #Function that builds the text box for the sidebar
-
         if( self.count == 1):
             self.textbox.configure(state = tk.NORMAL)
             #self.textbox.delete("1.0",tk.END)
@@ -104,31 +104,7 @@ class Home(ct.CTk):
             self.build_games()
             self.count = 0
     
-
-    #Making the button
-    def button(self,stats):
-        #Function that builds the button need to change to a class
-           
-        self.game = stats[0]
-        self.path = stats[1]
-        self.img = stats[2]
-        self.stats = stats[3]
-        
-
-        self.size = 150
-
-
-        #Need to change button to class and change in the app with .configure
-        img =ct.CTkImage(light_image = Image.open(self.img),size=(self.size,self.size))
-        return ct.CTkButton(master=self.game_frame, text = "", image = img, command=self.game_button)
-
-    #Button Helpers
-    def get_imgpath(self): return self.img
-    def get_game(self): return self.game 
-    def get_path(self): return self.path
-    def get_attempt(self): 
-        print(self.stats)
-        return  self.stats
+    
 
 
     #Button Functions
@@ -145,7 +121,6 @@ class Home(ct.CTk):
         
         self.gametext = ct.CTkEntry(master=self.game_bar_frame)
         self.gametext.grid(row = 1, column = 4, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        self.gametext.insert('1',self.get_attempt())
         self.gametext.configure(state = tk.DISABLED)
 
 
@@ -154,26 +129,25 @@ class Home(ct.CTk):
 
         self.attempt_text = ct.CTkEntry(master=self.game_bar_frame)
         self.attempt_text.grid(row = 3, column = 4, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        self.attempt_text.insert('1',self.get_attempt())
         self.attempt_text.configure(state = tk.DISABLED)
 
 
     #Deletes
     def delete_game_bar(self):
-        #Deletes the game side bar
         self.gametext.configure(state = tk.NORMAL)
         self.game_bar_frame.destroy()
     
     def delete_games(self):
-        #Deletes the game buttons themself
         self.game_btn1.destroy()
         self.game_btn2.destroy()
 
-        
+    
+    def play(self):
+        filepath="run_project.bat"
+        p = sub.Popen(filepath, shell=True, stdout = sub.PIPE)
 
-            
-
-        
+        stdout, stderr = p.communicate()
+        #print(p.returncode) # is 0 if success
 
 
 
